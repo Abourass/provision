@@ -65,12 +65,20 @@ echo "Installing Go..."
 if is_installed go
     echo "  ✓ Go already installed (version: "(go version)")"
 else
-    echo "  → Installing Go..."
-    # Update to newer version
-    set GO_VERSION "1.22.0"
-    set GO_ARCHIVE "go$GO_VERSION.linux-amd64.tar.gz"
+    echo "  → Fetching latest Go version..."
 
+    # Get the latest version filename from go.dev/dl
+    set GO_ARCHIVE (curl -sL https://go.dev/dl/ | grep -oP 'go[0-9]+\.[0-9]+(\.[0-9]+)?\.linux-amd64\.tar\.gz' | head -1)
+
+    if test -z "$GO_ARCHIVE"
+        error "Failed to fetch latest Go version"
+        exit 1
+    end
+
+    echo "  → Installing Go ($GO_ARCHIVE)..."
     curl -fsSL "https://go.dev/dl/$GO_ARCHIVE" -o /tmp/$GO_ARCHIVE
+
+    # Remove previous installation and extract
     sudo rm -rf /usr/local/go
     sudo tar -C /usr/local -xzf /tmp/$GO_ARCHIVE
     rm /tmp/$GO_ARCHIVE
@@ -80,6 +88,8 @@ else
         echo "  → Adding Go to PATH..."
         fish_add_path /usr/local/go/bin
     end
+
+    echo "  ✓ Go "(go version | awk '{print $3}')" installed"
 end
 
 # Unity / .NET SDK (Optional - based on user selection)

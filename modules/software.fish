@@ -14,15 +14,7 @@ if is_installed brave-browser
     echo "  ✓ Brave already installed"
 else
     echo "  → Installing Brave Browser..."
-
-    # Add Brave repository
-    if not test -f /etc/apt/sources.list.d/brave-browser-release.list
-        sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-        sudo apt update
-    end
-
-    apt_install brave-browser
+    curl -fsS https://dl.brave.com/install.sh | sh
 end
 
 # Slack (Optional - based on user selection)
@@ -32,8 +24,8 @@ if test "$INSTALL_SLACK" = "yes"
     if is_installed slack
         echo "  ✓ Slack already installed"
     else
-        echo "  → Installing Slack via snap..."
-        snap_install slack --classic
+        echo "  → Installing Slack via .deb package..."
+        install_deb_from_url "https://slack.com/downloads/instructions/linux?ddl=1&build=deb"
     end
 else
     echo "  ⊗ Skipping Slack"
@@ -46,8 +38,8 @@ if test "$INSTALL_DISCORD" = "yes"
     if is_installed discord
         echo "  ✓ Discord already installed"
     else
-        echo "  → Installing Discord via snap..."
-        snap_install discord
+        echo "  → Installing Discord via .deb package..."
+        install_deb_from_url "https://discord.com/api/download?platform=linux&format=deb"
     end
 else
     echo "  ⊗ Skipping Discord"
