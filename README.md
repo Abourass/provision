@@ -9,33 +9,26 @@ A streamlined provisioning tool for setting up new Debian-based systems (Ubuntu,
 - **Smart Selection**: Only prompts for truly optional tools (Slack, Discord, Unity/DotNet)
 - **Modern Stack**: Fish shell, Homebrew, FNM, and cutting-edge CLI tools
 
-## Prerequisites
-
-On a fresh system, you'll need git to clone this repository. Install it first:
-
-```bash
-sudo apt update && sudo apt install -y git
-```
-
 ## Quick Start
 
-### One-Line Installation
+### One-Line Installation (Recommended)
+
+Run this single command on a fresh Debian-based system:
 
 ```bash
-git clone https://github.com/Abourass/provision.git ~/provision && cd ~/provision && ./bootstrap.sh
+curl -fsSL https://raw.githubusercontent.com/Abourass/provision/main/setup.sh | bash
 ```
 
 This command will:
-1. Clone the repository to `~/provision`
-2. Navigate into the directory
-3. Run the bootstrap script to provision your system
+1. Install git if not already present
+2. Clone the repository to `~/provision`
+3. Run the bootstrap script to provision your entire system
 
-> **Note**: If `~/provision` already exists, you can just run:
-> ```bash
-> cd ~/provision && git pull && ./bootstrap.sh
-> ```
+> **Note**: Safe to run multiple times! If `~/provision` already exists, it will pull the latest changes and re-run.
 
-### Alternative: Step-by-Step
+### Alternative: Manual Installation
+
+If you prefer to review the code first or already have git installed:
 
 ```bash
 # Clone this repo
@@ -91,9 +84,15 @@ All required tools install automatically:
 ## Execution Flow
 
 ```
+curl setup.sh | bash (or ./setup.sh)
+  ↓
+Check & Install: git (if needed)
+  ↓
+Clone/Update: provision repo
+  ↓
 ./bootstrap.sh
   ↓
-Install: curl, git, build-essential
+Install: curl, build-essential
   ↓
 Install: Fish shell (PPA)
   ↓
@@ -121,6 +120,7 @@ Done!
 
 ```
 provision/
+├── setup.sh              # Quick setup wrapper (installs git + runs bootstrap)
 ├── bootstrap.sh          # Core tools installer (bash)
 ├── main.fish             # Orchestrator with optional tool selection
 ├── modules/              # Auto-run installation modules
