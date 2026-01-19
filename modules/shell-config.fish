@@ -52,15 +52,10 @@ else
     echo "  ✓ oh-my-posh upgrades already enabled"
 end
 
-# Enable claude feature (idempotent - safe to run multiple times)
-if not test -f ~/.cache/oh-my-posh/claude_feature_enabled
-    echo "  → Enabling oh-my-posh claude feature..."
-    oh-my-posh claude
-    mkdir -p ~/.cache/oh-my-posh
-    touch ~/.cache/oh-my-posh/claude_feature_enabled
-else
-    echo "  ✓ oh-my-posh claude feature already enabled"
-end
+# Note: The Claude segment is already configured in theme.json
+# The 'oh-my-posh claude' command is a render command used by Claude Code's statusline,
+# not a setup command we need to run during provisioning
+echo "  ✓ Claude segment configured in theme (will activate when using Claude Code)"
 
 # Create oh-my-posh config directory
 ensure_dir ~/.config/ohmyposh
