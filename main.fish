@@ -88,16 +88,18 @@ echo "======================================"
 echo ""
 echo "All tools have been installed."
 echo ""
+echo "Your fish shell configuration has been set up automatically at:"
+echo "  ~/.config/fish/config.fish"
+echo ""
 
 # Suggest setting fish as default shell if not already
 if test $SHELL != (which fish)
-    echo "Tip: To set fish as your default shell, run:"
-    echo "  chsh -s (which fish)"
+    echo "Next steps:"
+    echo "  1. Set fish as your default shell: chsh -s (which fish)"
+    echo "  2. Restart your terminal or run: source ~/.config/fish/config.fish"
+    echo ""
+else
+    echo "To activate the new configuration:"
+    echo "  Restart your terminal or run: source ~/.config/fish/config.fish"
     echo ""
 end
-
-echo "Tip: Add these to your ~/.config/fish/config.fish:"
-echo "  eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-echo "  fnm env | source"
-echo "  zoxide init fish | source"
-echo ""

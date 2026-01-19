@@ -70,7 +70,7 @@ if test -f ~/.config/ohmyposh/theme.json
     echo "  ✓ oh-my-posh theme already exists (skipping to preserve customizations)"
 else
     echo "  → Installing custom oh-my-posh theme..."
-    cat > ~/.config/ohmyposh/theme.json << 'THEME_EOF'
+    bash -c 'cat > ~/.config/ohmyposh/theme.json << '\''THEME_EOF'\''
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "palette": {
@@ -240,7 +240,7 @@ else
   "final_space": true,
   "version": 4
 }
-THEME_EOF
+THEME_EOF'
 
     echo "  ✓ oh-my-posh theme configured"
 end
