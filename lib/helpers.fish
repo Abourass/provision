@@ -171,3 +171,55 @@ function confirm
     set prompt $argv[1]
     gum confirm "$prompt"
 end
+
+# Create a timestamped backup of a file
+# Usage: backup_file <file_path>
+function backup_file
+    set file_path $argv[1]
+
+    if not test -f "$file_path"
+        return 0
+    end
+
+    set timestamp (date +"%Y%m%d_%H%M%S")
+    set backup_path "$file_path.backup.$timestamp"
+
+    echo "  → Creating backup: $backup_path"
+    cp "$file_path" "$backup_path"
+end
+
+# Safely append a config section to a file if it doesn't already exist
+# Usage: append_config_section <file_path> <section_marker> <content_pattern> <content...>
+# section_marker: unique comment to identify this section (e.g., "# PROVISION: homebrew")
+# content_pattern: regex pattern to detect if similar content already exists
+function append_config_section
+    set file_path $argv[1]
+    set section_marker $argv[2]
+    set content_pattern $argv[3]
+    set content $argv[4..]
+
+    # Create file if it doesn't exist
+    if not test -f "$file_path"
+        touch "$file_path"
+    end
+
+    # Check if section marker already exists (provision script already added it)
+    if grep -q "$section_marker" "$file_path"
+        echo "  ✓ Config section already exists: $section_marker"
+        return 0
+    end
+
+    # Check if similar content already exists (user manually configured)
+    if test -n "$content_pattern"; and grep -qE "$content_pattern" "$file_path"
+        echo "  ✓ Similar config already exists (detected: $content_pattern)"
+        return 0
+    end
+
+    # Append the section
+    echo "  → Adding config section: $section_marker"
+    echo "" >> "$file_path"
+    for line in $content
+        echo "$line" >> "$file_path"
+    end
+    echo "" >> "$file_path"
+end

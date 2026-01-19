@@ -56,6 +56,12 @@ All required tools install automatically:
 - Brave Browser (privacy-focused browser)
 - VS Code (code editor)
 
+**Shell Configuration:**
+- Claude Code (CLI tool for Claude AI)
+- Oh My Posh configuration (FiraCode font, Claude feature, custom theme)
+- Familiar Says (greeting tool with fortune integration)
+- Complete Fish shell configuration with all integrations
+
 ## Execution Flow
 
 ```
@@ -80,6 +86,7 @@ Auto-install all modules:
   - cli-tools
   - software
   - editors
+  - shell-config (prompts for code location)
   ↓
 Done!
 ```
@@ -94,7 +101,8 @@ provision/
 │   ├── dev-languages.fish   # Node, Bun, Go, DotNet
 │   ├── cli-tools.fish       # Oh My Posh + modern CLI tools
 │   ├── software.fish        # Brave, Slack, Discord
-│   └── editors.fish         # VS Code
+│   ├── editors.fish         # VS Code
+│   └── shell-config.fish    # Claude Code, oh-my-posh config, familiar-says, fish config
 ├── lib/
 │   └── helpers.fish      # Shared utility functions
 └── config/               # Future: config files
@@ -133,22 +141,21 @@ After updating your PATH, re-run this script.
 chsh -s $(which fish)
 ```
 
-### Configure Fish Shell
+### Fish Shell Configuration (Automated)
 
-Add these to your `~/.config/fish/config.fish`:
+The `shell-config` module automatically configures your Fish shell with:
+- Custom oh-my-posh theme with Claude integration
+- Familiar-says greeting with fortune integration
+- Homebrew completions
+- Go, PNPM, and Bun environment setup
+- FNM and Zoxide initialization
 
-```fish
-# Homebrew
-eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+Your `~/.config/fish/config.fish` is automatically created with all necessary configurations.
 
-# FNM (Fast Node Manager)
-fnm env | source
-
-# Zoxide (smarter cd)
-zoxide init fish | source
-
-# Oh My Posh (optional - customize theme)
-oh-my-posh init fish --config ~/.poshthemes/theme.json | source
+To activate the configuration after installation:
+```bash
+source ~/.config/fish/config.fish
+# or restart your terminal
 ```
 
 ## Helper Functions

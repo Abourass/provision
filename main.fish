@@ -60,7 +60,7 @@ echo "Installing all required tools automatically..."
 echo ""
 
 # Define module execution order
-set modules "dev-languages" "cli-tools" "software" "editors"
+set modules "dev-languages" "cli-tools" "software" "editors" "shell-config"
 
 # Run each module
 for module in $modules
