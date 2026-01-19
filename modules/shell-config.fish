@@ -30,26 +30,47 @@ echo "Configuring oh-my-posh..."
 # Install firacode font
 echo "  → Installing FiraCode font..."
 if is_installed oh-my-posh
-    oh-my-posh font install firacode --user
+    # Check if font is already installed by looking for font files
+    if test -d ~/.local/share/fonts; and find ~/.local/share/fonts -name "*FiraCode*" -o -name "*firacode*" | grep -q .
+        echo "  ✓ FiraCode font already installed"
+    else
+        echo "  → Installing FiraCode font via oh-my-posh..."
+        oh-my-posh font install firacode --user
+    end
 else
     error "oh-my-posh not found! It should have been installed by cli-tools module."
     exit 1
 end
 
-# Enable upgrades
-echo "  → Enabling oh-my-posh upgrades..."
-oh-my-posh enable upgrade
+# Enable upgrades (idempotent - safe to run multiple times)
+if not test -f ~/.cache/oh-my-posh/upgrade_check_enabled
+    echo "  → Enabling oh-my-posh upgrades..."
+    oh-my-posh enable upgrade
+    mkdir -p ~/.cache/oh-my-posh
+    touch ~/.cache/oh-my-posh/upgrade_check_enabled
+else
+    echo "  ✓ oh-my-posh upgrades already enabled"
+end
 
-# Enable claude feature
-echo "  → Enabling oh-my-posh claude feature..."
-oh-my-posh claude
+# Enable claude feature (idempotent - safe to run multiple times)
+if not test -f ~/.cache/oh-my-posh/claude_feature_enabled
+    echo "  → Enabling oh-my-posh claude feature..."
+    oh-my-posh claude
+    mkdir -p ~/.cache/oh-my-posh
+    touch ~/.cache/oh-my-posh/claude_feature_enabled
+else
+    echo "  ✓ oh-my-posh claude feature already enabled"
+end
 
 # Create oh-my-posh config directory
 ensure_dir ~/.config/ohmyposh
 
-# Install custom theme
-echo "  → Installing custom oh-my-posh theme..."
-cat > ~/.config/ohmyposh/theme.json << 'EOF'
+# Install custom theme only if it doesn't exist
+if test -f ~/.config/ohmyposh/theme.json
+    echo "  ✓ oh-my-posh theme already exists (skipping to preserve customizations)"
+else
+    echo "  → Installing custom oh-my-posh theme..."
+    cat > ~/.config/ohmyposh/theme.json << 'THEME_EOF'
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "palette": {
@@ -219,27 +240,41 @@ cat > ~/.config/ohmyposh/theme.json << 'EOF'
   "final_space": true,
   "version": 4
 }
-EOF
+THEME_EOF
 
-echo "  ✓ oh-my-posh theme configured"
-
-# Ask user for preferred code location
-echo ""
-echo "Setting up preferred code location..."
-echo ""
-echo "Where do you prefer to store your code projects?"
-echo "(Enter a folder name under your home directory, e.g., 'Code', 'Projects', 'src')"
-echo ""
-
-# Use gum input to get the folder name
-set code_folder (gum input --placeholder "Code")
-
-# Default to "Code" if empty
-if test -z "$code_folder"
-    set code_folder "Code"
+    echo "  ✓ oh-my-posh theme configured"
 end
 
-set PREFERRED_REPO_LOCATION "$HOME/$code_folder"
+# Ask user for preferred code location (only if not already configured)
+set PREF_CODE_MARKER "$HOME/.config/provision/preferred_code_location"
+
+if test -f "$PREF_CODE_MARKER"
+    set PREFERRED_REPO_LOCATION (cat "$PREF_CODE_MARKER")
+    echo ""
+    echo "  ✓ Using saved code location: $PREFERRED_REPO_LOCATION"
+else
+    echo ""
+    echo "Setting up preferred code location..."
+    echo ""
+    echo "Where do you prefer to store your code projects?"
+    echo "(Enter a folder name under your home directory, e.g., 'Code', 'Projects', 'src')"
+    echo ""
+
+    # Use gum input to get the folder name
+    set code_folder (gum input --placeholder "Code")
+
+    # Default to "Code" if empty
+    if test -z "$code_folder"
+        set code_folder "Code"
+    end
+
+    set PREFERRED_REPO_LOCATION "$HOME/$code_folder"
+
+    # Save the preference
+    ensure_dir (dirname "$PREF_CODE_MARKER")
+    echo "$PREFERRED_REPO_LOCATION" > "$PREF_CODE_MARKER"
+    echo "  ✓ Saved preference to $PREF_CODE_MARKER"
+end
 
 # Create the directory if it doesn't exist
 if not test -d "$PREFERRED_REPO_LOCATION"
