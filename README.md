@@ -9,11 +9,37 @@ A streamlined provisioning tool for setting up new Debian-based systems (Ubuntu,
 - **Smart Selection**: Only prompts for truly optional tools (Slack, Discord, Unity/DotNet)
 - **Modern Stack**: Fish shell, Homebrew, FNM, and cutting-edge CLI tools
 
+## Prerequisites
+
+On a fresh system, you'll need git to clone this repository. Install it first:
+
+```bash
+sudo apt update && sudo apt install -y git
+```
+
 ## Quick Start
+
+### One-Line Installation
+
+```bash
+git clone https://github.com/Abourass/provision.git ~/provision && cd ~/provision && ./bootstrap.sh
+```
+
+This command will:
+1. Clone the repository to `~/provision`
+2. Navigate into the directory
+3. Run the bootstrap script to provision your system
+
+> **Note**: If `~/provision` already exists, you can just run:
+> ```bash
+> cd ~/provision && git pull && ./bootstrap.sh
+> ```
+
+### Alternative: Step-by-Step
 
 ```bash
 # Clone this repo
-git clone <your-repo-url> ~/provision
+git clone https://github.com/Abourass/provision.git ~/provision
 cd ~/provision
 
 # Run the bootstrap script
